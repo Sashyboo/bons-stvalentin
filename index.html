@@ -3,124 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tes Surprises de Saint-Valentin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <title>Cadeaux de Saint-Valentin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- LIBRAIRIE POUR L'ENVOI D'EMAIL -->
+    <!-- LIBRAIRIE EMAILJS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
         /* --- CONFIGURATION --- */
         :root {
-            --primary-color: #e84393;
-            --secondary-color: #6c5ce7;
-            --bg-gradient-start: #ff9a9e;
-            --bg-gradient-end: #fecfef;
-            --text-color: #2d3436;
+            --primary-color: #d63384; 
+            --primary-light: #ff85a2;
+            --text-color: #4a4a4a;
             --white: #ffffff;
-            --overlay-bg: rgba(0, 0, 0, 0.6);
-            --success-color: #00b894;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --success-color: #20bf6b;
         }
 
         body {
             margin: 0;
-            height: 100vh; /* Force la hauteur de l'écran */
+            height: 100vh;
             display: flex; 
             justify-content: center;
             align-items: center;     
-            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad0c4, #fbc2eb);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             font-family: 'Montserrat', sans-serif;
             color: var(--text-color);
             padding: 20px;
             box-sizing: border-box;
-            overflow: hidden; /* Évite le double scroll sur mobile */
+            overflow: hidden;
+            position: relative;
         }
 
-        /* --- LA CARTE PRINCIPALE --- */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- CŒURS EN ARRIÈRE PLAN --- */
+        .bg-heart {
+            position: absolute;
+            top: -10%;
+            color: rgba(255, 255, 255, 0.3);
+            animation: floatHeart linear infinite;
+            z-index: -1; 
+        }
+
+        @keyframes floatHeart {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- LA CARTE (Effet Verre) --- */
         .container {
-            background: var(--white);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
             width: 100%;
-            max-width: 450px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            max-width: 420px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1), 0 0 0 5px rgba(255,255,255,0.3);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            /* On limite la hauteur pour forcer le scroll interne */
             max-height: 85vh; 
-            animation: slideUp 0.8s ease-out;
+            animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            z-index: 10;
         }
 
         @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: translateY(60px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
         }
 
         /* --- HEADER --- */
         .header {
-            background-color: #fff0f6;
-            padding: 30px 20px;
+            background: rgba(255, 240, 245, 0.6);
+            padding: 30px 20px 20px;
             text-align: center;
-            border-bottom: 2px dashed var(--primary-color);
-            flex-shrink: 0; /* Empêche le header de s'écraser */
+            border-bottom: 1px solid rgba(232, 67, 147, 0.1);
+            flex-shrink: 0;
+            position: relative; /* Pour positionner le bouton retour */
+        }
+
+        /* Nouveau bouton retour */
+        .btn-back {
+            position: absolute;
+            left: 15px;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: white;
+            transform: scale(1.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .romantic-title {
             font-family: 'Great Vibes', cursive;
             color: var(--primary-color);
-            font-size: 2.8em;
+            font-size: 3em;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(232, 67, 147, 0.1);
         }
 
         .subtitle {
-            margin-top: 10px;
-            font-size: 0.9em;
-            color: #636e72;
+            margin-top: 8px;
+            font-size: 0.95em;
+            color: #7d5a5a;
+            font-weight: 500;
         }
 
-        /* --- LISTE DES BONS (SCROLLABLE) --- */
+        /* --- LISTE DES BONS --- */
         .coupon-list {
             padding: 20px;
-            overflow-y: auto; /* Active le scroll vertical */
-            /* La magie Flexbox pour le scroll : */
+            overflow-y: auto;
             flex: 1; 
-            min-height: 0; /* CRUCIAL : autorise le rétrécissement pour activer le scroll */
+            min-height: 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(232, 67, 147, 0.3) transparent;
         }
+        
+        .coupon-list::-webkit-scrollbar { width: 6px; }
+        .coupon-list::-webkit-scrollbar-thumb { background-color: rgba(232, 67, 147, 0.3); border-radius: 10px; }
 
-        /* --- UN COUPON --- */
+        /* --- COUPON CARD --- */
         .coupon-card {
-            background: white;
-            border: 1px solid #dfe6e9;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
             padding: 15px;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
             flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
 
         .coupon-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transform: translateY(-4px) scale(1.01);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 25px rgba(232, 67, 147, 0.15);
+            border-color: var(--primary-light);
         }
 
         .coupon-card.used {
             background-color: #f1f2f6;
-            border-color: #b2bec3;
-            opacity: 0.8;
+            opacity: 0.7;
+            filter: grayscale(0.8);
             pointer-events: none;
+            box-shadow: none;
         }
 
         .coupon-icon {
-            width: 50px;
-            height: 50px;
-            background-color: #fff0f6;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #fff0f6, #ffe3e3);
             color: var(--primary-color);
             border-radius: 50%;
             display: flex;
@@ -128,11 +192,7 @@
             justify-content: center;
             font-size: 1.2em;
             flex-shrink: 0;
-        }
-
-        .coupon-card.used .coupon-icon {
-            background-color: #b2bec3;
-            color: white;
+            box-shadow: 0 2px 10px rgba(232, 67, 147, 0.1);
         }
 
         .coupon-details {
@@ -142,86 +202,131 @@
         .coupon-title {
             font-weight: 600;
             margin-bottom: 4px;
+            color: #2d3436;
             display: block;
+            font-size: 1.05em;
         }
 
         .coupon-desc {
-            font-size: 0.8em;
+            font-size: 0.85em;
             color: #636e72;
+            line-height: 1.4;
         }
 
         .coupon-action {
-            color: var(--primary-color);
+            color: var(--primary-light);
             cursor: pointer;
-            padding: 10px;
+            padding: 8px;
             border-radius: 50%;
-            transition: background 0.2s;
+            transition: 0.3s;
         }
 
         .coupon-action:hover {
             background-color: #fff0f6;
+            color: var(--primary-color);
         }
 
         .status-badge {
-            font-size: 0.7em;
+            font-size: 0.75em;
             background: var(--success-color);
             color: white;
-            padding: 4px 8px;
-            border-radius: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
             display: inline-block;
-            margin-top: 5px;
+            margin-top: 6px;
+            box-shadow: 0 2px 5px rgba(32, 191, 107, 0.2);
         }
 
         /* --- ÉCRAN D'INTRO --- */
         #intro-screen {
             padding: 40px;
             text-align: center;
-            background: white;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
         }
 
         /* --- BOUTONS --- */
+        
+        /* Animation de pulsation pour le bouton principal */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(232, 67, 147, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(232, 67, 147, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(232, 67, 147, 0); }
+        }
+
         .btn-primary {
-            background-color: var(--primary-color);
+            background: linear-gradient(45deg, var(--primary-color), #ff6b81);
             color: white;
-            padding: 15px 30px;
+            padding: 16px 36px;
             border: none;
             border-radius: 50px;
-            font-size: 1em;
+            
+            /* Retour à la police standard mais stylisée */
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 1.1em;
             font-weight: 600;
+            
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             justify-content: center;
-            width: 100%;
+            width: auto;
+            min-width: 220px;
+            box-shadow: 0 5px 20px rgba(214, 51, 132, 0.3);
+            
+            /* Style "Chic" */
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            
+            /* Animation */
+            animation: pulse-glow 2s infinite;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(214, 51, 132, 0.5);
+            filter: brightness(1.1);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px);
         }
         
         .btn-primary:disabled {
-            background-color: #b2bec3;
+            background: #b2bec3;
             cursor: not-allowed;
             transform: none !important;
+            box-shadow: none;
+            animation: none;
+            font-size: 1em;
         }
 
         .btn-secondary {
             background: transparent;
             border: 2px solid #b2bec3;
             color: #636e72;
-            padding: 10px 20px;
+            padding: 10px 25px;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
+            transition: 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary-light);
+            color: var(--primary-color);
         }
 
         /* --- MODALE --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--overlay-bg);
+            background: rgba(45, 52, 54, 0.6); 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -229,7 +334,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s;
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(5px);
         }
 
         .modal-overlay.active {
@@ -240,12 +345,13 @@
         .modal-box {
             background: white;
             padding: 30px;
-            border-radius: 20px;
+            border-radius: 25px;
             width: 85%;
             max-width: 320px;
             text-align: center;
             transform: scale(0.9);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
         }
 
         .modal-overlay.active .modal-box {
@@ -253,57 +359,70 @@
         }
         
         .modal-icon {
-            font-size: 3em;
-            color: var(--primary-color);
+            font-size: 3.5em;
+            background: linear-gradient(135deg, #ff9a9e, var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
         }
 
         .modal-actions {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             margin-top: 25px;
         }
         
         .modal-actions button {
             flex: 1;
+            min-width: 0; 
+            padding: 12px;
+            font-size: 0.9em;
+            /* On remet la police normale pour les boutons de la modale pour la lisibilité */
+            font-family: 'Montserrat', sans-serif; 
+            text-transform: uppercase;
         }
 
         .hidden { display: none !important; }
         
-        /* Spinner pour le chargement */
-        .fa-spinner {
-            animation: spin 1s linear infinite;
-        }
+        /* Spinner */
+        .fa-spinner { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
     </style>
 </head>
 <body>
 
+    <!-- Conteneur pour les cœurs flottants -->
+    <div id="hearts-container"></div>
+
     <!-- CONTENEUR PRINCIPAL -->
     <div class="container">
         
         <!-- ÉCRAN 1 : ACCUEIL -->
         <div id="intro-screen">
-            <i class="fas fa-heart" style="font-size: 4em; color: var(--primary-color); margin-bottom: 20px; animation: heartbeat 1.5s infinite;"></i>
-            <h1 class="romantic-title">Pour ma Valentine, Romane.</h1>
-            <p style="color: #636e72; line-height: 1.6;">
+            <div style="font-size: 5em; margin-bottom: 20px; filter: drop-shadow(0 5px 15px rgba(232, 67, 147, 0.2)); animation: heartbeat 2s infinite;">
+                <i class="fas fa-heart" style="color: var(--primary-color);"></i>
+            </div>
+            <h1 class="romantic-title">Pour ma Valentine,<br>Romane.</h1>
+            <p style="color: #636e72; line-height: 1.8; font-size: 1.05em; margin: 25px 0;">
                 Je manque un peu d'originalité, mais l'idée est très bonne, alors je la vole, mais à ma sauce ! <br>
-                J'espère que tu seras pas déçue :p
+                J'espère que tu ne seras pas déçue :p
             </p>
-            <button id="btn-start" class="btn-primary" style="margin-top: 30px;">
-                Tes cadeaux <i class="fas fa-arrow-right"></i>
+            <button id="btn-start" class="btn-primary">
+                Ouvrir mes cadeaux
             </button>
         </div>
 
         <!-- ÉCRAN 2 : LISTE DES BONS -->
-        <!-- flex: 1 et min-height: 0 sont essentiels ici pour le scroll -->
         <div id="list-screen" class="hidden" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
             <div class="header">
-                <h2 class="romantic-title" style="font-size: 2em;">Tes Cadeaux</h2>
-                <div class="subtitle">Choisis celui que tu veux utiliser!
-                    Fais gaffe, t'as le droit qu'à un seul bon.
-                </div>
+                <!-- LE BOUTON RETOUR -->
+                <button id="btn-back" class="btn-back" title="Retour à l'accueil">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+
+                <h2 class="romantic-title" style="font-size: 2.2em;">Tes Cadeaux</h2>
+                <div class="subtitle">Choisis celui que tu veux utiliser ! Fais gaffe, une seule fois par cadeaux :p</div>
             </div>
 
             <div id="coupons-container" class="coupon-list"></div>
@@ -315,47 +434,67 @@
     <div id="modal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-icon"><i class="fas fa-envelope-open-text"></i></div>
-            <h3 id="modal-title" style="margin-top: 0; color: #2d3436;">On valide ?</h3>
-            <p id="modal-text" style="font-size: 0.9em; color: #636e72;">Tu es sur le point d'utiliser ce bon.</p>
-            <p id="modal-info" style="font-size: 0.8em; color: var(--primary-color); font-style: italic;">
-                <i class="fas fa-magic"></i> Cela enverra automatiquement la confirmation à ton copain. (Tu pourras pas frauder haha)
+            <h3 id="modal-title" style="margin-top: 0; color: #2d3436; font-family: 'Montserrat', sans-serif;">On valide ?</h3>
+            <p id="modal-text" style="font-size: 0.95em; color: #636e72; line-height: 1.5;">
+                Tu es sur le point d'utiliser ce bon.
+            </p>
+            <p id="modal-info" style="font-size: 0.85em; color: var(--primary-color); background: #fff0f6; padding: 10px; border-radius: 10px; margin-top: 15px;">
+                <i class="fas fa-magic"></i> &nbsp;Confirmation auto envoyée à ton copain d'amoureux d'amour ! (pas de fraude héhé)
             </p>
             <div class="modal-actions">
                 <button id="btn-cancel" class="btn-secondary">Annuler</button>
-                <button id="btn-confirm" class="btn-primary">Valider !</button>
+                <button id="btn-confirm" class="btn-primary" style="animation: none;">Valider !</button>
             </div>
         </div>
     </div>
 
     <script>
+        // --- 0. DÉCORATION (Coeurs flottants) ---
+        function createFloatingHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartCount = 15;
+
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('bg-heart');
+                heart.innerHTML = '<i class="fas fa-heart"></i>';
+                
+                heart.style.left = Math.random() * 100 + 'vw';
+                const size = Math.random() * 20 + 10; 
+                heart.style.fontSize = size + 'px';
+                heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                
+                container.appendChild(heart);
+            }
+        }
+        createFloatingHearts(); 
+
         // --- 1. CONFIGURATION EMAILJS ---
-        // J'ai laissé à 'false' pour que l'email parte vraiment, car tu as mis tes clés.
         const SIMULATION_MODE = false; 
         const EMAILJS_SERVICE_ID = "service_kqawbsm";
         const EMAILJS_TEMPLATE_ID = "template_zxo8ckl";
         const EMAILJS_PUBLIC_KEY = "2URpbIT-qRWSsc10k";
 
-
         // --- CONFIGURATION CADEAUX ---
         const DEFAULT_COUPONS = [
-            { id: 1, title: "Cadeau de la semaine sans réseaux", desc: "Tu l'auras quand tu veux. Même maintenant, si tu veux !", icon: "fa-utensils", used: false, date: null },
+            { id: 8, title: "Cadeau de la semaine sans réseaux", desc: "Tu l'auras quand tu veux. Même maintenant, si tu veux !", icon: "fa-gift", used: false, date: null },
+            { id: 1, title: "Dîner aux chandelles", desc: "Je cuisine ce que tu veux, ou on mange où tu veux !", icon: "fa-utensils", used: false, date: null },
             { id: 2, title: "Soirée Massage", desc: "30 minutes de massage. Avec huiles essentielles !", icon: "fa-spa", used: false, date: null },
             { id: 3, title: "Plus de secrets !", desc: "Je suis obligé de dire quelque chose que je prévoyais de garder secret.", icon: "fa-user-secret", used: false, date: null },
             { id: 4, title: "Sortie découverte", desc: "Je te prépare une sortie à un endroit que tu connais pas, sans que tu n'aies rien à faire.", icon: "fa-map-signs", used: false, date: null },
             { id: 5, title: "Un caprice", desc: "Quelle diva.. Bon, ok. Je ferai ce que tu veux.", icon: "fa-crown", used: false, date: null },
             { id: 6, title: "Des bonbons ? OUAIIIS", desc: "T'as le droit à deux paquets de bonbons, de ton choix. Tu peux les prendre à des moments différents.", icon: "fa-candy-cane", used: false, date: null },
-            { id: 7, title: "Soirée pyjama", desc: "Une soirée pyjama, où tu veux, quand tu veux.", icon: "fa-bed", used: false, date: null },
-            { id: 8, title: "Dîner aux chandelles", desc: "Je cuisine ce que tu veux, ou on mange où tu veux !", icon: "fa-gift", used: false, date: null }
+            { id: 7, title: "Soirée pyjama", desc: "Une soirée pyjama, où tu veux, quand tu veux.", icon: "fa-bed", used: false, date: null }
         ];
 
-        // Changement de version pour forcer la mise à jour de la liste
-        const STORAGE_KEY = 'carnet_bons_v5'; 
+        // Changement de version pour forcer le nouvel ordre
+        const STORAGE_KEY = 'carnet_bons'; 
         let currentCouponId = null;
         let coupons = [];
 
         // --- LOGIQUE ---
 
-        // Initialisation EmailJS sécurisée
         if (!SIMULATION_MODE) {
             try {
                 if(EMAILJS_PUBLIC_KEY) emailjs.init(EMAILJS_PUBLIC_KEY);
@@ -430,7 +569,6 @@
                 if (SIMULATION_MODE) {
                     await new Promise(resolve => setTimeout(resolve, 1500));
                 } else {
-                    // Envoi réel
                     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
                         to_name: "Sashy",
                         gift_name: coupon.title,
@@ -460,12 +598,24 @@
             }
         }
 
+        // --- NAVIGATION ---
+        
+        // Aller à la liste
         document.getElementById('btn-start').addEventListener('click', () => {
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('list-screen').classList.remove('hidden');
             document.getElementById('list-screen').style.display = 'flex';
         });
 
+        // Retour à l'accueil
+        document.getElementById('btn-back').addEventListener('click', () => {
+            document.getElementById('list-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+            // Reset du style flex car la classe hidden l'écrase, mais au retrait de hidden, 
+            // intro-screen revient à son display flex défini dans le CSS
+        });
+
+        // Modale
         document.getElementById('btn-cancel').addEventListener('click', () => {
             document.getElementById('modal').classList.remove('active');
             currentCouponId = null;
