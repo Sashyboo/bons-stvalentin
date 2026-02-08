@@ -96,6 +96,61 @@
             to { transform: translateY(0) scale(1); opacity: 1; }
         }
 
+        /* --- ÉCRAN LOGIN (NOUVEAU) --- */
+        #login-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px); /* Flou pour cacher le contenu */
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 2000; /* Au dessus de tout */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 85%;
+            max-width: 320px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #ffdde1;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2em;
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+            color: var(--primary-color);
+            background: #fff0f6;
+        }
+
+        .password-input:focus {
+            border-color: var(--primary-color);
+            background: white;
+        }
+
+        .error-msg {
+            color: #ff4757;
+            font-size: 0.9em;
+            height: 20px;
+            margin-bottom: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
         /* --- HEADER --- */
         .header {
             background: rgba(255, 240, 245, 0.6);
@@ -388,6 +443,7 @@
             min-width: 0; 
             padding: 12px;
             font-size: 0.9em;
+            /* On remet la police normale pour les boutons de la modale pour la lisibilité */
             font-family: 'Montserrat', sans-serif; 
             text-transform: uppercase;
         }
@@ -446,8 +502,23 @@
 </head>
 <body>
 
-    <!-- Conteneur pour les cœurs flottants -->
+    <!-- FONDS ANIMES -->
     <div id="hearts-container"></div>
+
+    <!-- ÉCRAN DE CONNEXION (AJOUTÉ) -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 class="romantic-title" style="font-size: 2.5em; margin-bottom: 10px;">Chut...</h2>
+            <p style="color: #636e72;">Une surprise t'attend, mais il faut le code secret !</p>
+            
+            <input type="password" id="password-input" class="password-input" placeholder="Code secret" inputmode="numeric">
+            <div id="login-error" class="error-msg">Mauvais code, réessaie ! ❤️</div>
+            
+            <button id="btn-login" class="btn-primary" style="min-width: 150px; padding: 12px 25px; font-size: 1em; animation: none;">
+                Découvrir
+            </button>
+        </div>
+    </div>
 
     <!-- CONTENEUR PRINCIPAL -->
     <div class="container">
@@ -461,7 +532,7 @@
             <h1 class="romantic-title">Pour ma Valentine,<br>Romane.</h1>
             <p style="color: #636e72; line-height: 1.8; font-size: 1.05em; margin: 25px 0;">
                 Je manque un peu d'originalité, mais l'idée est très bonne, alors je la vole, mais à ma sauce ! <br>
-                J'espère que tu ne seras pas déçue :p (Au cas où, j'ai caché un petit truc ma petite swifite.. hihi)
+                J'espère que tu ne seras pas déçue :p
             </p>
             <button id="btn-start" class="btn-primary">
                 Ouvrir mes cadeaux
@@ -477,7 +548,7 @@
                 </button>
 
                 <h2 class="romantic-title" style="font-size: 2.2em;">Tes Cadeaux</h2>
-                <div class="subtitle">Choisis celui que tu veux utiliser. C'est une seule utilisation, gratte pas trop :p</div>
+                <div class="subtitle">Choisis celui que tu veux utiliser aujourd'hui !</div>
             </div>
 
             <div id="coupons-container" class="coupon-list"></div>
@@ -509,10 +580,10 @@
             <div class="modal-icon"><i class="fas fa-envelope-open-text"></i></div>
             <h3 id="modal-title" style="margin-top: 0; color: #2d3436; font-family: 'Montserrat', sans-serif;">On valide ?</h3>
             <p id="modal-text" style="font-size: 0.95em; color: #636e72; line-height: 1.5;">
-                Tu es sur le point d'utiliser ce bon.
+                Tu es sur le point d'utiliser ce bon :O
             </p>
             <p id="modal-info" style="font-size: 0.85em; color: var(--primary-color); background: #fff0f6; padding: 10px; border-radius: 10px; margin-top: 15px;">
-                <i class="fas fa-magic"></i> &nbsp;Ca enverra une confirmation auto à ton copain d'amour amoureux blblbl! :D
+                <i class="fas fa-magic"></i> &nbsp;Je vais recevoir une confirmation, pour être sûr que tu triches pas :p !
             </p>
             <div class="modal-actions">
                 <button id="btn-cancel" class="btn-secondary">Annuler</button>
@@ -522,6 +593,10 @@
     </div>
 
     <script>
+        // --- CONFIGURATION MOT DE PASSE (AJOUTÉ) ---
+        const APP_PASSWORD = "mini"; 
+        const LOGIN_KEY = "auth_romane_v1";
+
         // --- 0. DÉCORATION (Coeurs flottants) ---
         function createFloatingHearts() {
             const container = document.getElementById('hearts-container');
@@ -553,7 +628,7 @@
         const DEFAULT_COUPONS = [
             { id: 8, title: "Cadeau de la semaine sans réseaux", desc: "Tu l'auras quand tu veux. Même maintenant, si tu veux !", icon: "fa-gift", used: false, date: null },
             { id: 1, title: "Dîner aux chandelles", desc: "Je cuisine ce que tu veux, ou on mange où tu veux !", icon: "fa-utensils", used: false, date: null },
-            { id: 2, title: "Soirée Massage", desc: "30 minutes de massage. Avec huiles essentielles !", icon: "fa-spa", used: false, date: null },
+            { id: 2, title: "Séance Massage", desc: "30 minutes de massage. Avec huiles essentielles !", icon: "fa-spa", used: false, date: null },
             { id: 3, title: "Plus de secrets !", desc: "Je suis obligé de dire quelque chose que je prévoyais de garder secret.", icon: "fa-user-secret", used: false, date: null },
             { id: 4, title: "Sortie découverte", desc: "Je te prépare une sortie à un endroit que tu connais pas, sans que tu n'aies rien à faire.", icon: "fa-map-signs", used: false, date: null },
             { id: 5, title: "Un caprice", desc: "Quelle diva.. Bon, ok. Je ferai ce que tu veux.", icon: "fa-crown", used: false, date: null },
@@ -565,6 +640,38 @@
         const STORAGE_KEY = 'carnet_bons_v6'; 
         let currentCouponId = null;
         let coupons = [];
+
+        // --- LOGIQUE LOGIN (AJOUTÉ) ---
+        function checkLogin() {
+            const isLogged = localStorage.getItem(LOGIN_KEY);
+            const loginScreen = document.getElementById('login-screen');
+            if (isLogged === 'true') {
+                loginScreen.style.display = 'none';
+            } else {
+                loginScreen.style.display = 'flex';
+            }
+        }
+
+        function attemptLogin() {
+            const input = document.getElementById('password-input');
+            const errorMsg = document.getElementById('login-error');
+            const loginScreen = document.getElementById('login-screen');
+
+            if (input.value === APP_PASSWORD) {
+                localStorage.setItem(LOGIN_KEY, 'true');
+                errorMsg.style.opacity = '0';
+                loginScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                }, 500);
+            } else {
+                errorMsg.style.opacity = '1';
+                input.style.transform = 'translateX(10px)';
+                setTimeout(() => input.style.transform = 'translateX(-10px)', 100);
+                setTimeout(() => input.style.transform = 'translateX(0)', 200);
+                input.value = '';
+            }
+        }
 
         // --- LOGIQUE ---
 
@@ -671,9 +778,15 @@
             }
         }
 
-        // --- NAVIGATION ---
+        // --- NAVIGATION & LOGIN EVENTS ---
         
-        // Logique de l'Easter Egg
+        // Login
+        document.getElementById('btn-login').addEventListener('click', attemptLogin);
+        document.getElementById('password-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') attemptLogin();
+        });
+
+        // Easter Egg
         const heartTrigger = document.getElementById('heart-trigger');
         const easterEggScreen = document.getElementById('easter-egg-screen');
 
@@ -725,6 +838,7 @@
         `;
         document.head.appendChild(styleSheet);
 
+        checkLogin(); // Init Login
         loadCoupons();
     </script>
 </body>
